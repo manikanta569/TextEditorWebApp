@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Card, CardContent, Typography, Box, CircularProgress, Avatar } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Box,
+  CircularProgress,
+  Avatar,
+} from "@mui/material";
 import DescriptionIcon from "@mui/icons-material/Description";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
@@ -17,10 +24,13 @@ const MyDocs = () => {
       if (!token) return alert("No token found! Please log in.");
 
       try {
-        console.log("env"+ process.env.REACT_APP_SERVER_URL);
-        const response = await axios.get(process.env.REACT_APP_SERVER_URL+"/drive", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        console.log("env" + process.env.REACT_APP_SERVER_URL);
+        const response = await axios.get(
+          process.env.REACT_APP_SERVER_URL + "/drive",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setDocs(response.data.files || []);
       } catch (error) {
         console.error("Error fetching docs:", error);
@@ -33,9 +43,9 @@ const MyDocs = () => {
   }, []);
 
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", direction: "column" }}>
       <Sidebar />
-      <div style={{ flex: 1 }}>
+      <div>
         <Navbar />
         <Box sx={{ padding: 3, margin: 5 }}>
           <Typography variant="h4" gutterBottom>
@@ -44,20 +54,26 @@ const MyDocs = () => {
 
           {/* Show Loader While Fetching Data */}
           {loading ? (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              minHeight="50vh"
+            >
               <CircularProgress />
             </Box>
           ) : docs.length > 0 ? (
-            <Box sx={{ display: "flex", overflowX: "auto", gap: 2, padding: 2 }}>
+            <Box sx={{ overflowX: "auto" }}>
               {docs.map((doc) => (
                 <Card
                   key={doc.id}
                   sx={{
                     display: "flex",
-                    padding: 1,
+
+                    margin: "5px",
                     cursor: "pointer",
                     borderRadius: 1,
-                    minWidth: "250px",
+                    minWidth: "150vh",
                     height: "40px",
                     border: "1px solid #ddd",
                   }}
@@ -67,7 +83,10 @@ const MyDocs = () => {
                     <DescriptionIcon />
                   </Avatar>
                   <CardContent sx={{ padding: 0 }}>
-                    <Typography variant="h6" sx={{ fontWeight: "bold", padding: 0, marginTop: "4px" }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: "bold", padding: 0, marginTop: "4px" }}
+                    >
                       {doc.name || "Untitled Document"}
                     </Typography>
                   </CardContent>
