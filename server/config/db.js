@@ -6,9 +6,12 @@ const pool = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
+  port: process.env.DB_PORT || 3306,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  connectTimeout: 30000,
+  acquireTimeout: 30000,
 });
 
 const promisePool = pool.promise();
@@ -19,17 +22,19 @@ const connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
+  port: process.env.DB_PORT || 3306,
 });
 
-connection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME}\``, async (err) => {
-  if (err) {
-    console.error(" Error creating database:", err);
-    return;
-  }
-  console.log(` Database '${process.env.DB_NAME}' is ready.`);
+connection.query(
+  `CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME}\``,
+  async (err) => {
+    if (err) {
+      console.error(" Error creating database:", err);
+      return;
+    }
+    console.log(` Database '${process.env.DB_NAME}' is ready.`);
 
-  
-  const createDraftsTable = `
+    const createDraftsTable = `
     CREATE TABLE IF NOT EXISTS drafts (
       id INT AUTO_INCREMENT PRIMARY KEY,
       title VARCHAR(255) NOT NULL,
@@ -38,22 +43,23 @@ connection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME}\``, asy
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`;
 
-  const createUsersTable = `
+    const createUsersTable = `
     CREATE TABLE IF NOT EXISTS users (
       id INT AUTO_INCREMENT PRIMARY KEY,
       email VARCHAR(255) UNIQUE NOT NULL,
       password VARCHAR(255) NOT NULL
     )`;
 
-  try {
-    await promisePool.query(createDraftsTable);
-    console.log(" Drafts table is ready.");
+    try {
+      await promisePool.query(createDraftsTable);
+      console.log(" Drafts table is ready.");
 
-    await promisePool.query(createUsersTable);
-    console.log(" Users table is ready.");
-  } catch (err) {
-    console.error("Error creating tables:", err);
+      await promisePool.query(createUsersTable);
+      console.log(" Users table is ready.");
+    } catch (err) {
+      console.error("Error creating tables:", err);
+    }
+
+    connection.end();
   }
-
-  connection.end();
-});
+);
