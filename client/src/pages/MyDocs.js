@@ -47,6 +47,8 @@ const MyDocs = () => {
       <Sidebar />
       <div>
         <Navbar />
+
+        {/* comment */}
         <Box sx={{ padding: 3, margin: 5 }}>
           <Typography variant="h4" gutterBottom>
             My Documents
