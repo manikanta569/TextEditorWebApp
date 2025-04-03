@@ -63,10 +63,12 @@ const Editor = ({ content, setContent }) => {
     plainTextContent.innerHTML = content;
     const textContent =
       plainTextContent.textContent || plainTextContent.innerText || "";
-
+/
     try {
       await axios.post(
         process.env.REACT_APP_SERVER_URL + "/drive/upload",
+                // process.env.REACT_APPSERVER_URL + "/drive/upload",
+
         { title: docName, textContent },
         { headers: { Authorization: `Bearer ${token}` } }
       );
