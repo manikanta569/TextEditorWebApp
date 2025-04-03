@@ -39,7 +39,6 @@ router.get("/google/callback", async (req, res) => {
     process.env.JWT_SECRET,
     { expiresIn: "10h" }
   );
-  // res.redirect(`http://localhost:3000/editor?token=${token}`);
   res.redirect(`${frontendUrl}/editor?token=${token}`);
 });
 
